@@ -8,6 +8,10 @@ class ProductPage(BasePage):
     product_description = ''
 
     def add_to_basket(self):
+        add_to_basket_button = self.browser.find_element(*ProductPageLocators.BTN_ADD_TO_BASKET)
+        add_to_basket_button.click()
+
+    def add_to_basket_with_promo(self):
         # check that everything is in place
         self.should_be_name()
         self.should_be_price()
@@ -15,8 +19,7 @@ class ProductPage(BasePage):
         self.should_be_add_button()
 
         # add product to the basket
-        add_to_basket_button = self.browser.find_element(*ProductPageLocators.BTN_ADD_TO_BASKET)
-        add_to_basket_button.click()
+        self.add_to_basket()
 
         # solve question
         self.solve_quiz_and_get_code()
@@ -38,16 +41,24 @@ class ProductPage(BasePage):
         self.product_description = self.browser.find_element(*ProductPageLocators.PRODUCT_DESCRIPTION).text
 
     def should_be_success(self):
-        assert self.is_element_present(*ProductPageLocators.SUCCESS_MESSAGES), "Message of Success added product in " \
-                                                                               "basket not found "
+        assert self.is_element_present(*ProductPageLocators.SUCCESS_MESSAGES), \
+            "Message of Success added product in basket not found"
 
     def should_be_add_button(self):
         assert self.is_element_present(*ProductPageLocators.BTN_ADD_TO_BASKET), "Button 'Add to basket' is not " \
                                                                                 "presented "
 
     def check_success_message(self):
-        msg_lst = self.browser.find_elements(*ProductPageLocators.SUCCESS_MESSAGES)
+        msg_lst = self.browser.find_elements(*ProductPageLocators.SUCCESS_STRONG_TEXT_MESSAGES)
         assert len(msg_lst) == 3, "Success message not found"
 
         assert self.product_name == msg_lst[0].text, "Wrong name product added to basket"
         assert self.product_price == msg_lst[2].text, "Wrong price product added to basket"
+
+    def should_not_be_success_message(self):
+        assert self.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGES), \
+            "Success message is presented, but should not be"
+
+    def should_disappeared(self):
+        assert self.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGES), \
+            "Success message is not disappeared, but it should"
