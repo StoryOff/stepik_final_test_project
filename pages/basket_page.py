@@ -3,7 +3,6 @@ from .locators import BasketPageLocators
 
 
 class BasketPage(BasePage):
-
     def is_basket_not_empty(self):
         assert self.is_element_present(*BasketPageLocators.BASKET_SUMMARY), \
             "Basket summary is not present, but should"
