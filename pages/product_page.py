@@ -11,7 +11,7 @@ class ProductPage(BasePage):
         add_to_basket_button = self.browser.find_element(*ProductPageLocators.BTN_ADD_TO_BASKET)
         add_to_basket_button.click()
 
-    def add_to_basket_with_promo(self):
+    def add_to_basket_with_promo(self, promo=True):
         # check that everything is in place
         self.should_be_name()
         self.should_be_price()
@@ -22,7 +22,8 @@ class ProductPage(BasePage):
         self.add_to_basket()
 
         # solve question
-        self.solve_quiz_and_get_code()
+        if promo:
+            self.solve_quiz_and_get_code()
 
         # check the product was added successfully
         self.should_be_success()
