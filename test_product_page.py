@@ -10,6 +10,28 @@ urls = [f"{product_base_link}?promo=offer{no}" if no != 7
         else pytest.param("bugged_link", marks=pytest.mark.xfail) for no in range(1)]
 
 
+class TestUserAddToBasketFromProductPage:
+    @pytest.fixture(scope="function", autouse=True)
+    def setup(self, browser):
+        page = LoginPage(browser, "http://selenium1py.pythonanywhere.com/ru/accounts/login/")
+        page.open()
+        email = str(time.time()) + "@fakemail.org"
+        password = str(time.time() + random.randint(1, 100))
+        page.register_new_user(email, password)
+        page.should_be_authorized_user()
+
+    def test_user_cant_see_success_message(self, browser):
+        page = ProductPage(browser, product_base_link, timeout=0)
+        page.open()
+        page.should_not_be_success_message()
+
+    @pytest.mark.need_review
+    def test_user_can_add_product_to_basket(self, browser):
+        page = ProductPage(browser, product_base_link)
+        page.open()
+        page.add_to_basket_with_promo(promo=False)
+
+
 @pytest.mark.need_review
 @pytest.mark.parametrize("link", urls)
 def test_guest_can_add_product_to_basket(browser, link):
@@ -62,25 +84,3 @@ def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
     page.go_to_basket_page()
     page.is_basket_empty()
     page.is_message_in_empty_cart_is_present()
-
-
-class TestUserAddToBasketFromProductPage:
-    @pytest.fixture(scope="function", autouse=True)
-    def setup(self, browser):
-        self.page = LoginPage(browser, "http://selenium1py.pythonanywhere.com/ru/accounts/login/")
-        self.page.open()
-        email = str(time.time()) + "@fakemail.org"
-        password = str(time.time() + random.randint(1, 100))
-        self.page.register_new_user(email, password)
-        self.page.should_be_authorized_user()
-
-    def test_user_cant_see_success_message(self, browser):
-        page = ProductPage(browser, product_base_link, timeout=0)
-        page.open()
-        page.should_not_be_success_message()
-
-    @pytest.mark.need_review
-    def test_user_can_add_product_to_basket(self, browser):
-        page = ProductPage(browser, product_base_link)
-        page.open()
-        page.add_to_basket_with_promo(promo=False)
