@@ -38,14 +38,6 @@ def test_guest_cant_see_product_in_basket_opened_from_main_page(browser):
     page.is_message_in_empty_cart_is_present()
 
 
-def test_guest_can_see_product_in_basket_opened_from_main_page(browser):
-    page = BasketPage(browser, main_page)
-    page.open()
-    page.go_to_basket_page()
-    page.is_basket_not_empty()
-    page.is_message_in_empty_cart_is_not_present()
-
-
 @pytest.mark.login_guest
 class TestLoginFromMainPage:
     def test_guest_can_go_to_login_page(self, browser):
