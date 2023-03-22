@@ -1,3 +1,5 @@
+import time
+from .pages.basket_page import BasketPage
 import pytest
 from .pages.product_page import ProductPage
 
@@ -48,3 +50,19 @@ def test_guest_can_go_to_login_page_from_product_page(browser):
     page = ProductPage(browser, link)
     page.open()
     page.go_to_login_page()
+
+
+def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
+    page = BasketPage(browser, product_base_link)
+    page.open()
+    page.go_to_basket_page()
+    page.is_basket_empty()
+    page.is_message_in_empty_cart_is_present()
+
+
+def test_guest_can_see_product_in_basket_opened_from_product_page(browser):
+    page = BasketPage(browser, product_base_link)
+    page.open()
+    page.go_to_basket_page()
+    page.is_basket_not_empty()
+    page.is_message_in_empty_cart_is_not_present()
